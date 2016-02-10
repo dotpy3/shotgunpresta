@@ -39,9 +39,11 @@
 </div>
 <div class="content" ng-repeat="event in events">
 	<hr>
-	<h3 class="title is-3"><span ng-hide="event.modifying">{{ event.name }}</span><input type="text" class="form-control" ng-show="event.modifying" /> <span class="subtitle is-5">du <strong>{{ event.start | date:'dd/MM/yyyy' }}</strong> au <strong>{{ event.end | date:'dd/MM/yyyy' }}</strong></span><span class="pull-right"><button class="button is-primary" ng-click="event.modifying = !event.modifying"><i class="fa fa-fw fa-edit"></i> Modifier</button></span></h3>
-	
-	<p class="description">{{ event.description }}</p>
+	<h3 class="title is-3"><span>{{ event.name }}</span> <span class="subtitle is-5">du <strong>{{ event.start | date:'dd/MM/yyyy' }}</strong> au <strong>{{ event.end | date:'dd/MM/yyyy' }}</strong></span><span class="pull-right"><button class="button is-primary" ng-click="modifyEvent(event)"><i class="fa fa-fw fa-edit"></i> Modifier</button></span></h3>
+	<p ng-show="event.modifying"><label>Nouveau nom :<input type="text" class="form-control" ng-model="event.newName" /></label></p>
+	<p ng-show="event.modifying"><label>Nouvelle description :<br /><textarea rows="6" class="form-control" ng-model="event.newDescription" /></textarea></label></p>
+	<button ng-show="event.modifying" class="button is-primary">Sauvegarder</button> <button ng-show="event.modifying" class="button is-primary is-outlined">Annuler</button>
+	<p ng-hide="event.modifying" class="description">{{ event.description }}</p>
 	<h4 class="title is-4">Prestas<button ng-click="event.addingPresta = !event.addingPresta" class="button is-outlined is-primary pull-right"><i class="fa fa-fw fa-plus"></i> Ajouter</button></h4>
 	<form style="margin-bottom: 10px;" ng-show="event.addingPresta" ng-init="event.newPresta = {}" class="form-inline">
 		<p>

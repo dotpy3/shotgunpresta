@@ -59,6 +59,12 @@ angular.module('shotgunApp').controller('AdminCtrl', function($scope, $http, $ro
 		presta.newSlots = presta.slots;
 	};
 
+	$scope.modifyEvent = function(event) {
+		event.modifying = !event.modifying;
+		event.newName = event.name;
+		event.newDescription = event.description;
+	}
+
 	$scope.updatePresta = function(presta) {
 		presta.updating = true;
 		$http({
