@@ -1,4 +1,8 @@
-angular.module('shotgunApp').controller('AdminCtrl', function($scope, $http, APP_URL) {
+angular.module('shotgunApp').controller('AdminCtrl', function($scope, $http, $routeParams, APP_URL) {
+	var key = '';
+	if ($routeParams.key) {
+		key = $routeParams.key;
+	}
 
 	$scope.creatingEvent = false;
 	$scope.createEvent = function() {
@@ -45,6 +49,36 @@ angular.module('shotgunApp').controller('AdminCtrl', function($scope, $http, APP
 		}, function() {
 			console.log('hmm');
 			event.ajaxAddingPresta = false;
+		});
+	};
+
+	$scope.editPresta = function(presta) {
+		presta.modifying = true;
+		presta.newName = presta.name;
+		presta.newDescription = presta.description;
+		presta.newSlots = presta.slots;
+	};
+
+	$scope.updatePresta = function(presta) {
+		presta.updating = true;
+		$http({
+			method: 'PUT',
+			url: APP_URL + 'presta/' + presta.id,
+			data: {
+				key: key,
+				name: presta.newName,
+				description: presta.newDescription,
+				type: presta.type,
+				slots: presta.newSlots,
+			}
+		}).then(function(){
+			presta.name = presta.newName;
+			presta.description = presta.newDescription;
+			presta.slots = presta.newSlots;
+			presta.modifying = false;
+			presta.updating = false;
+		}, function() {
+			presta.updating = false;
 		});
 	};
 

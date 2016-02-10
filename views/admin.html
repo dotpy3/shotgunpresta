@@ -38,9 +38,10 @@
 	</div>
 </div>
 <div class="content" ng-repeat="event in events">
+	<hr>
 	<h3 class="title is-3"><span ng-hide="event.modifying">{{ event.name }}</span><input type="text" class="form-control" ng-show="event.modifying" /> <span class="subtitle is-5">du <strong>{{ event.start | date:'dd/MM/yyyy' }}</strong> au <strong>{{ event.end | date:'dd/MM/yyyy' }}</strong></span><span class="pull-right"><button class="button is-primary" ng-click="event.modifying = !event.modifying"><i class="fa fa-fw fa-edit"></i> Modifier</button></span></h3>
 	
-	<p>{{ event.description }}</p>
+	<p class="description">{{ event.description }}</p>
 	<h4 class="title is-4">Prestas<button ng-click="event.addingPresta = !event.addingPresta" class="button is-outlined is-primary pull-right"><i class="fa fa-fw fa-plus"></i> Ajouter</button></h4>
 	<form style="margin-bottom: 10px;" ng-show="event.addingPresta" ng-init="event.newPresta = {}" class="form-inline">
 		<p>
@@ -50,13 +51,15 @@
 			<button class="button is-primary" ng-class="{ 'is-loading': event.ajaxAddingPresta }" ng-click="addPresta(event)">Ajouter</button>
 		</p>
 	</form>
-	<nav class="navbar" ng-repeat="presta in event.prestas">
-		<div class="navbar-item">
-			<p class="subtitle is-5">{{ presta.name }} <button class="button is-primary is-small is-outlined">Modifier la presta</button></p>
-			<p>Places : {{ presta.slots }} </p>
-			<p>Participants ({{presta.shotgunners.length || 0}}) :</p>
-			<ul><li ng-repeat="shotgunner in presta.shotgunners">{{ shotgunner.name }} ({{ shotgunner.email }}) <i class="fa fa-times"></i></li></ul>
-		</div>
-	</nav>
-	<hr>
+	<div ng-repeat="presta in event.prestas">
+		<p class="subtitle is-5">{{ presta.name }} <button ng-hide="presta.modifying" class="button is-primary is-small" ng-click="editPresta(presta)">Modifier la presta</button><button ng-show="presta.modifying" ng-class="{ 'is-loading': presta.updating }" class="button is-primary is-small" ng-click="updatePresta(presta)">Sauvegarder</button> <button ng-show="presta.modifying" class="button is-primary is-small is-outlined" ng-click="presta.modifying = false">Annuler</button></p>
+		<p ng-show="presta.modifying">Nouveau nom :</p>
+		<input ng-show="presta.modifying" type="text" class="form-control" ng-model="presta.newName">
+		<p ng-show="presta.modifying">Nouvelle description :</p>
+		<textarea ng-show="presta.modifying" rows="6" class="form-control" ng-model="presta.newName"></textarea>
+		<p>Places : <span ng-hide="presta.modifying">{{ presta.slots }}</span><input ng-if="presta.modifying" class="form-control" type="number" ng-model="presta.newSlots"></p>
+		<p>Participants ({{presta.shotgunners.length || 0}}) :</p>
+		<ul><li ng-repeat="shotgunner in presta.shotgunners">{{ shotgunner.name }} ({{ shotgunner.email }}) <i class="fa fa-times"></i></li></ul>
+	</div>
 </div>
+<hr>

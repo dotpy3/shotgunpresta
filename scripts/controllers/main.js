@@ -15,7 +15,7 @@ angular.module('shotgunApp').controller('MainCtrl', function($scope, $http, APP_
 		}, function() {
 			presta.shotgunLaunched = false;
 		})
-	}
+	};
 
 	$scope.getEvents = function() {
 		$http({

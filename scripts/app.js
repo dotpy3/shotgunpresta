@@ -17,7 +17,11 @@ angular.module('shotgunApp', [
 	$httpProvider.interceptors.push(function($q, message) {
 		return {
 			responseError: function(response) {
-				message.error(response.data.error.message || 'Une erreur est survenue.');
+				if (response.data){
+					message.error(response.data.error.message || response.data.error.code || 'Une erreur est survenue.');
+				} else {
+					message.error('Impossible de se connecter au serveur.');
+				}
 				return $q.reject(response);
 			}
 		}
