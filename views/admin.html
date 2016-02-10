@@ -1,0 +1,62 @@
+<div class="notification is-primary" ng-show="eventCreated">
+	<button class="delete" ng-click="closeNewEventAlert()"></button>
+	L'événement {{ eventCreated.name }} a bien été ajouté.
+</div>
+<div class="notification is-danger" ng-show="connectionError">
+	<button class="delete" ng-click="connectionError = false"></button>
+	Impossible de récupérer les événements ; la connexion au serveur a échoué.
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<h2 class="title is-2">Administration</h2>
+	</div>
+</div>
+<div class="columns">
+	<div class="column">
+		<form ng-submit="createEvent()">
+			<h3 class="title is-3">Ajouter un événement</h3>
+			<p class="control">
+				<input type="text" class="form-control" placeholder="Nom de l'événement" ng-model="newEvent.name" />
+			</p>
+			<p class="control">
+				<textarea style="resize:none;" placeholder="Description de l'événement" ng-model="newEvent.desc" rows="6" class="form-control"></textarea>
+			</p>
+			<p class="control">
+				<label>Début
+					<input type="text" class="form-control" placeholder="JJ/MM/AAAA" ng-model="newEvent.start" />
+				</label>
+			</p>
+			<p class="control">
+				<label>Fin
+					<input type="text" class="form-control" placeholder="JJ/MM/AAAA" ng-model="newEvent.end" />
+				</label>
+			</p>
+			<button type="submit" class="button is-primary" ng-class="{ 'is-loading': creatingEvent }">Créer</button>
+		</form>
+	</div>
+	<div class="column">
+	</div>
+</div>
+<div class="content" ng-repeat="event in events">
+	<h3 class="title is-3"><span ng-hide="event.modifying">{{ event.name }}</span><input type="text" class="form-control" ng-show="event.modifying" /> <span class="subtitle is-5">du <strong>{{ event.start | date:'dd/MM/yyyy' }}</strong> au <strong>{{ event.end | date:'dd/MM/yyyy' }}</strong></span><span class="pull-right"><button class="button is-primary" ng-click="event.modifying = !event.modifying"><i class="fa fa-fw fa-edit"></i> Modifier</button></span></h3>
+	
+	<p>{{ event.description }}</p>
+	<h4 class="title is-4">Prestas<button ng-click="event.addingPresta = !event.addingPresta" class="button is-outlined is-primary pull-right"><i class="fa fa-fw fa-plus"></i> Ajouter</button></h4>
+	<form style="margin-bottom: 10px;" ng-show="event.addingPresta" ng-init="event.newPresta = {}" class="form-inline">
+		<p>
+			<input type="text" placeholder="Nom" ng-model="event.newPresta.name" class="form-control" />
+			<input type="text" placeholder="Description" ng-model="event.newPresta.description" class="form-control" />
+			<input type="number" placeholder="Nombre de places" ng-model="event.newPresta.slots" class="form-control" />
+			<button class="button is-primary" ng-class="{ 'is-loading': event.ajaxAddingPresta }" ng-click="addPresta(event)">Ajouter</button>
+		</p>
+	</form>
+	<nav class="navbar" ng-repeat="presta in event.prestas">
+		<div class="navbar-item">
+			<p class="subtitle is-5">{{ presta.name }} <button class="button is-primary is-small is-outlined">Modifier la presta</button></p>
+			<p>Places : {{ presta.slots }} </p>
+			<p>Participants ({{presta.shotgunners.length || 0}}) :</p>
+			<ul><li ng-repeat="shotgunner in presta.shotgunners">{{ shotgunner.name }} ({{ shotgunner.email }}) <i class="fa fa-times"></i></li></ul>
+		</div>
+	</nav>
+	<hr>
+</div>

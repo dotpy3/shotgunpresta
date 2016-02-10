@@ -1,0 +1,31 @@
+{
+  "name": "shotgunpresta",
+  "authors": [
+    "Eric Gourlaouen <e.gourlaouen@weezevent.com>"
+  ],
+  "description": "Shotgun presta",
+  "main": "index.html",
+  "moduleType": [],
+  "keywords": [
+    "weezevent"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.0",
+    "bulma": "^0.0.12",
+    "angular-bootstrap": "^1.1.2",
+    "bootstrap": "^3.3.6",
+    "angular-animate": "^1.5.0",
+    "angular-route": "^1.5.0",
+    "remarkable-bootstrap-notify": "^3.1.3"
+  }
+}

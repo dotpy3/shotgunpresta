@@ -1,0 +1,32 @@
+<div class="row" id="availableEventsTitle">
+	<div class="col-md-12">
+		<h2 class="title is-2">Événements disponibles</h2>
+	</div>
+</div>
+<div class="content" ng-repeat="event in events" ng-hide="event.prestas.length===0">
+	<h3 class="title is-3">{{ event.name }} <span class="subtitle is-5">du <strong>{{ event.start }}</strong> au <strong>{{ event.end }}</strong></span></h3>
+	
+	<p style="margin-left:15px;">{{ event.description }}</p>
+	<h4 class="title is-4">Prestas disponibles</h4>
+	<p ng-show="event.prestas.length === 0">Aucune presta disponible.</p>
+	<nav style="margin-left:20px;" class="navbar" ng-repeat="presta in event.prestas">
+		<div class="navbar-item">
+			<p><span class="title is-5">{{ presta.name }}</span> {{ presta.description }}</p>
+		</div>
+		<div class="navbar-right" ng-show="presta.shotgunInitiated">
+			<input type="text" class="col-md-2 form-control navbar-item" ng-model="presta.shotgunName" placeholder="Nom" />
+			<input type="email" class="col-md-4 form-control navbar-item" ng-model="presta.shotgunMail" placeholder="Adresse e-mail" />
+			<p class="navbar-item"><button class="button is-primary" ng-class="{ 'is-loading': presta.shotgunLaunched }" ng-click="launchShotgun(presta)">OK</button></p>
+		</div>
+		<div class="navbar-right" ng-hide="presta.shotgunInitiated">
+			<div class="navbar-item is-centered">
+				<p class="heading">Places</p>
+				<p class="title">{{ presta.slots }}</p>
+			</div>
+			<div class="navbar-item is-centered">
+				<p><a class="button is-primary" ng-click="initiateShotgun(presta)">Shotgun</a></p>
+			</div>
+		</div>
+	</nav>
+	<hr>
+</div>
