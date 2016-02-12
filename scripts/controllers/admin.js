@@ -18,7 +18,6 @@ angular.module('shotgunApp').controller('AdminCtrl', function($scope, $http, $ro
 				creator: 'Jo Colina',
 			}
 		}).then(function() {
-			$scope.eventCreated = angular.copy($scope.newEvent);
 			$scope.newEvent = {};
 			$scope.getEvents();
 			$scope.creatingEvent = false;
@@ -45,10 +44,26 @@ angular.module('shotgunApp').controller('AdminCtrl', function($scope, $http, $ro
 			event.addingPresta = false;
 			event.prestas.push(event.newPresta);
 			event.newPresta = {};
-			console.log('ok');
 		}, function() {
-			console.log('hmm');
 			event.ajaxAddingPresta = false;
+		});
+	};
+
+	$scope.deleteShotgun = function(index, presta) {
+		$http({
+			method: 'DELETE',
+			url: APP_URL + 'shotgun/' + presta.shotguns[index].id + '?key=' + key,
+		}).then(function() {
+			presta.shotguns.splice(index, 1);
+		});
+	};
+
+	$scope.validateShotgun = function(index, presta) {
+		$http({
+			method: 'POST',
+			url: APP_URL + 'shotgun/' + presta.shotguns[index].id + '?key=' + key,
+		}).then(function() {
+			presta.shotguns[index].status = 'V';
 		});
 	};
 
@@ -63,7 +78,33 @@ angular.module('shotgunApp').controller('AdminCtrl', function($scope, $http, $ro
 		event.modifying = !event.modifying;
 		event.newName = event.name;
 		event.newDescription = event.description;
-	}
+		event.newStart = event.start;
+		event.newEnd = event.end;
+	};
+
+	$scope.updateEvent = function(event) {
+		event.updating = true;
+		$http({
+			method: 'PUT',
+			url: APP_URL + 'event/' + event.id,
+			data: {
+				name: event.newName,
+				key: key,
+				description: event.newDescription,
+				start: event.newStart,
+				end: event.newEnd
+			}
+		}).then(function() {
+			event.name = event.newName;
+			event.description = event.newDescription;
+			event.start = event.newStart;
+			event.end = event.newEnd;
+			event.updating = false;
+			event.modifying = false;
+		}, function() {
+			event.updating = false;
+		});
+	};
 
 	$scope.updatePresta = function(presta) {
 		presta.updating = true;
@@ -95,7 +136,7 @@ angular.module('shotgunApp').controller('AdminCtrl', function($scope, $http, $ro
 	$scope.getEvents = function() {
 		$http({
 			method: 'GET',
-			url: APP_URL + 'events',
+			url: APP_URL + 'events' + (key ? '?key=' + key : ''),
 		}).then(function(data){
 			$scope.events = data.data;
 		}, function() {

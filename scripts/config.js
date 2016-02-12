@@ -1,1 +1,1 @@
-angular.module('shotgunApp').constant('APP_URL', 'http://localhost:8080/');
+angular.module('shotgunApp').constant('APP_URL', 'http://joserv.weez:8080/');

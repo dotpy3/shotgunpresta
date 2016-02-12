@@ -1,11 +1,3 @@
-<div class="notification is-primary" ng-show="eventCreated">
-	<button class="delete" ng-click="closeNewEventAlert()"></button>
-	L'événement {{ eventCreated.name }} a bien été ajouté.
-</div>
-<div class="notification is-danger" ng-show="connectionError">
-	<button class="delete" ng-click="connectionError = false"></button>
-	Impossible de récupérer les événements ; la connexion au serveur a échoué.
-</div>
 <div class="row">
 	<div class="col-md-12">
 		<h2 class="title is-2">Administration</h2>
@@ -39,12 +31,33 @@
 </div>
 <div class="content" ng-repeat="event in events">
 	<hr>
-	<h3 class="title is-3"><span>{{ event.name }}</span> <span class="subtitle is-5">du <strong>{{ event.start | date:'dd/MM/yyyy' }}</strong> au <strong>{{ event.end | date:'dd/MM/yyyy' }}</strong></span><span class="pull-right"><button class="button is-primary" ng-click="modifyEvent(event)"><i class="fa fa-fw fa-edit"></i> Modifier</button></span></h3>
-	<p ng-show="event.modifying"><label>Nouveau nom :<input type="text" class="form-control" ng-model="event.newName" /></label></p>
-	<p ng-show="event.modifying"><label>Nouvelle description :<br /><textarea rows="6" class="form-control" ng-model="event.newDescription" /></textarea></label></p>
-	<button ng-show="event.modifying" class="button is-primary">Sauvegarder</button> <button ng-show="event.modifying" class="button is-primary is-outlined">Annuler</button>
+	<h3 class="title is-3">
+		<span>{{ event.name }}</span> <span class="subtitle is-5">du <strong>{{ event.start | date:'dd/MM/yyyy' }}</strong> au <strong>{{ event.end | date:'dd/MM/yyyy' }}</strong></span><span class="pull-right"><button class="button is-primary" ng-click="modifyEvent(event)"><i class="fa fa-fw fa-edit"></i> Modifier</button> <button ng-click="event.addingPresta = !event.addingPresta" class="button is-primary"><i class="fa fa-fw fa-plus"></i> Ajouter une presta</button></span>
+	</h3>
+
+	<form ng-submit="updateEvent(event)">
+		<div class="form-group" ng-show="event.modifying">
+			<label>Nouveau nom :<input type="text" class="form-control" ng-model="event.newName" /></label>
+		</div>
+
+		<div class="form-group" ng-show="event.modifying">
+			<label>Nouvelle description :<br />
+			<textarea rows="6" class="form-control" ng-model="event.newDescription" /></textarea></label>
+		</div>
+
+		<div class="form-group" ng-show="event.modifying">
+			<label>Nouvelle date de début :<input type="text" class="form-control" ng-model="event.newStart" /></label>
+		</div>
+
+		<div class="form-group" ng-show="event.modifying">
+			<label>Nouvelle date de fin :<input type="text" class="form-control" ng-model="event.newEnd" /></label>
+		</div>
+
+		<button ng-show="event.modifying" class="button is-primary">Sauvegarder</button> <button ng-show="event.modifying" class="button is-primary is-outlined">Annuler</button>
+	</form>
+
 	<p ng-hide="event.modifying" class="description">{{ event.description }}</p>
-	<h4 class="title is-4">Prestas<button ng-click="event.addingPresta = !event.addingPresta" class="button is-outlined is-primary pull-right"><i class="fa fa-fw fa-plus"></i> Ajouter</button></h4>
+
 	<form style="margin-bottom: 10px;" ng-show="event.addingPresta" ng-init="event.newPresta = {}" class="form-inline">
 		<p>
 			<input type="text" placeholder="Nom" ng-model="event.newPresta.name" class="form-control" />
@@ -53,15 +66,50 @@
 			<button class="button is-primary" ng-class="{ 'is-loading': event.ajaxAddingPresta }" ng-click="addPresta(event)">Ajouter</button>
 		</p>
 	</form>
-	<div ng-repeat="presta in event.prestas">
-		<p class="subtitle is-5">{{ presta.name }} <button ng-hide="presta.modifying" class="button is-primary is-small" ng-click="editPresta(presta)">Modifier la presta</button><button ng-show="presta.modifying" ng-class="{ 'is-loading': presta.updating }" class="button is-primary is-small" ng-click="updatePresta(presta)">Sauvegarder</button> <button ng-show="presta.modifying" class="button is-primary is-small is-outlined" ng-click="presta.modifying = false">Annuler</button></p>
-		<p ng-show="presta.modifying">Nouveau nom :</p>
-		<input ng-show="presta.modifying" type="text" class="form-control" ng-model="presta.newName">
-		<p ng-show="presta.modifying">Nouvelle description :</p>
-		<textarea ng-show="presta.modifying" rows="6" class="form-control" ng-model="presta.newName"></textarea>
-		<p>Places : <span ng-hide="presta.modifying">{{ presta.slots }}</span><input ng-if="presta.modifying" class="form-control" type="number" ng-model="presta.newSlots"></p>
-		<p>Participants ({{presta.shotgunners.length || 0}}) :</p>
-		<ul><li ng-repeat="shotgunner in presta.shotgunners">{{ shotgunner.name }} ({{ shotgunner.email }}) <i class="fa fa-times"></i></li></ul>
+
+	<div class="message" ng-repeat="presta in event.prestas">
+		<div class="message-header">
+			{{presta.name}}<a href class="pull-right" ng-click="editPresta(presta)" ng-hide="presta.modifying">Modifier</a>
+		</div>
+		<div class="message-body">
+			<p ng-show="presta.modifying">Nouveau nom :</p>
+
+			<input ng-show="presta.modifying" type="text" class="form-control" ng-model="presta.newName">
+
+			<p ng-show="presta.modifying">Nouvelle description :</p>
+
+			<textarea ng-show="presta.modifying" rows="6" class="form-control" ng-model="presta.newDescription"></textarea>
+
+			<p>Places : <span ng-hide="presta.modifying">{{ presta.slots }}</span><input ng-if="presta.modifying" class="form-control" type="number" ng-model="presta.newSlots"></p>
+
+			<button ng-show="presta.modifying" ng-class="{ 'is-loading': presta.updating }" class="button is-primary" ng-click="updatePresta(presta)">Sauvegarder</button> <button ng-show="presta.modifying" class="button is-primary is-outlined" ng-click="presta.modifying = false">Annuler</button>
+
+			<div class="message" style="margin-top:8px;">
+				<div class="message-header">
+					Participants
+				</div>
+				<div class="message-body">
+					<table class="table" style="background-color: rgba(0,0,0,0)">
+						<thead>
+							<tr>
+								<th>Nom</th>
+								<th>Mail</th>
+								<th>Numéro de téléphone</th>
+								<th></th>
+								<th></th>
+							</tr>
+						</thead>
+						<tr ng-repeat="shotgun in presta.shotguns">
+							<td>{{shotgun.name}}</td>
+							<td>{{shotgun.mail}}</td>
+							<td>{{shotgun.phone_number}}</td>
+							<td><span ng-show="shotgun.status === 'E'"><a href ng-click="validateShotgun($index, presta)">Valider</a></span><span ng-hide="shotgun.status === 'E'">Validé</span></td>
+							<td><a class="fa fa-fw fa-times" ng-click="deleteShotgun($index, presta)"></a></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 <hr>
